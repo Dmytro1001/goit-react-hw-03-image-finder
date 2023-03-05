@@ -1,15 +1,15 @@
-import { Watch } from 'react-loader-spinner';
+import { ThreeDots } from 'react-loader-spinner';
 import { WrapperLoader } from './Loader.styles';
 
 export const Loader = () => {
   return (
     <WrapperLoader>
-      <Watch
+      <ThreeDots
         height="80"
         width="80"
-        radius="48"
+        radius="9"
         color="#000080"
-        ariaLabel="watch-loading"
+        ariaLabel="three-dots-loading"
         wrapperStyle={{}}
         wrapperClassName=""
         visible={true}

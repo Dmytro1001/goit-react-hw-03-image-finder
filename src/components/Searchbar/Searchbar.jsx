@@ -13,12 +13,15 @@ export class HeaderSearchbar extends Component {
     value: '',
   };
 
-  handleChange = ({ target: { value } }) => {
-    this.setState({ value });
+  // handleChange = ({ target: { value } }) => {
+  //   this.setState({ value });
+  // };
+  handleChange = event => {
+    this.setState({ [event.target.name]: event.target.value });
   };
 
-  handleSubmit = e => {
-    e.preventDefault();
+  hanleSubmit = event => {
+    event.preventDefault();
     this.props.onSearch(this.state.value);
     this.setState({ value: '' });
   };
@@ -33,12 +36,12 @@ export class HeaderSearchbar extends Component {
 
           <SearchFormInput
             type="text"
-            autoComplete="off"
             name="value"
+            autoComplete="off"
             autoFocus
-            placeholder="Search images and photos"
             value={this.state.value}
             onChange={this.handleChange}
+            placeholder="Search images and photos"
           />
         </SearchForm>
       </Searchbar>

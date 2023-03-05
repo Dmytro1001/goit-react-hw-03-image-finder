@@ -1,14 +1,12 @@
 import { Component } from 'react';
 import { PropTypes } from 'prop-types';
 import { fetchImages } from '../../services/getFetchImages';
-// import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { ImageGalleryList } from './ImageGallery.styles';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { Button } from 'components/Button/Button';
 import { Loader } from 'components/Loader/Loader';
 
-const STATUS = {
+const Status = {
   INIT: 'init',
   LOADING: 'loading',
   SUCCESS: 'success',
@@ -19,17 +17,17 @@ export class ImageGallery extends Component {
   state = {
     images: [],
     page: 1,
-    status: 'STATUS.INIT',
+    status: Status.INIT,
   };
 
   async componentDidMount() {
-    this.setState({ status: STATUS.LOADING });
+    this.setState({ status: Status.LOADING });
 
     try {
       const data = await fetchImages(this.props.value);
-      this.setState({ images: data, status: STATUS.SUCCESS });
+      this.setState({ images: data, status: Status.SUCCESS });
     } catch {
-      this.setState({ status: STATUS.ERROR });
+      this.setState({ status: Status.ERROR });
     }
   }
 
@@ -59,11 +57,11 @@ export class ImageGallery extends Component {
 
     return (
       <>
-        {status === STATUS.ERROR && <p>ERROR</p>}
+        {status === Status.ERROR && <p>ERROR</p>}
 
-        {status === STATUS.LOADING || (status === STATUS.INIT && <Loader />)}
+        {(status === Status.LOADING || status === Status.INIT) && <Loader />}
 
-        {status === STATUS.SUCCESS && (
+        {status === Status.SUCCESS && (
           <ImageGalleryList>
             {images?.map(item => {
               return (
@@ -85,5 +83,5 @@ export class ImageGallery extends Component {
 
 ImageGallery.propTypes = {
   value: PropTypes.string.isRequired,
-  // onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
