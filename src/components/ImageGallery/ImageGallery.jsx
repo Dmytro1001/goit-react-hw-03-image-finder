@@ -1,9 +1,11 @@
 import { Component } from 'react';
+import { PropTypes } from 'prop-types';
 import { fetchImages } from '../../services/getFetchImages';
 // import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ImageGalleryList } from './ImageGallery.styles';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
+import { Button } from 'components/Button/Button';
 
 const STATUS = {
   INIT: 'init',
@@ -15,7 +17,6 @@ const STATUS = {
 export class ImageGallery extends Component {
   state = {
     images: [],
-    error: null,
     page: 1,
     status: 'STATUS.INIT',
   };
@@ -39,9 +40,9 @@ export class ImageGallery extends Component {
 
     if (
       prevState.page !== this.state.page &&
-      prevProps.value === this.props.state.value
+      prevProps.value === this.props.value
     ) {
-      const newPage = await fetchImages(this.props.value, this.state.pege);
+      const newPage = await fetchImages(this.props.value, this.state.page);
       this.setState(prevState => ({
         images: [...prevState.images, ...newPage],
       }));
@@ -76,7 +77,13 @@ export class ImageGallery extends Component {
             })}
           </ImageGalleryList>
         )}
+        {images.length >= 12 && <Button onClick={this.handleLoadMore} />}
       </>
     );
   }
 }
+
+ImageGallery.propTypes = {
+  value: PropTypes.string.isRequired,
+  // onClick: PropTypes.func.isRequired,
+};
