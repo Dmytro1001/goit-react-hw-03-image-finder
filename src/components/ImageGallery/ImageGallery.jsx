@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ImageGalleryList } from './ImageGallery.styles';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { Button } from 'components/Button/Button';
+import { Loader } from 'components/Loader/Loader';
 
 const STATUS = {
   INIT: 'init',
@@ -60,8 +61,7 @@ export class ImageGallery extends Component {
       <>
         {status === STATUS.ERROR && <p>ERROR</p>}
 
-        {status === STATUS.LOADING ||
-          (status === STATUS.INIT && <p>Loading</p>)}
+        {status === STATUS.LOADING || (status === STATUS.INIT && <Loader />)}
 
         {status === STATUS.SUCCESS && (
           <ImageGalleryList>
