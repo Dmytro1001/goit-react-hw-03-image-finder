@@ -1,24 +1,24 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Overlay } from './Modal.styles';
+import { Overlay, ModalWindiw, Images } from './Modal.styles';
 
 export class Modal extends Component {
   componentDidMount() {
-    window.addEventListener('keydown', this.handleModalClose);
+    window.addEventListener('keydown', this.handleKeyModalClose);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleModalClose);
+    window.removeEventListener('keydown', this.handleKeyModalClose);
   }
 
-  handleModalClose = e => {
+  handleKeyModalClose = e => {
     if (e.code === 'Escape') {
       this.props.onClose();
     }
   };
 
-  handleBackdropClick = e => {
-    if (e.target === e.currentTarget) {
+  handleBackdropClick = event => {
+    if (event.target === event.currentTarget) {
       this.props.onClose();
     }
   };
@@ -26,9 +26,9 @@ export class Modal extends Component {
   render() {
     return (
       <Overlay onClick={this.handleBackdropClick}>
-        <Modal>
-          <img src={this.props.currentImage} alt="#" />
-        </Modal>
+        <ModalWindiw>
+          <Images src={this.props.currentImage} alt="#" />
+        </ModalWindiw>
       </Overlay>
     );
   }

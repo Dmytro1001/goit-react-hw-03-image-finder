@@ -2,16 +2,19 @@ import { Component } from 'react';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Modal } from './Modal/Modal';
 import { HeaderSearchbar } from './Searchbar/Searchbar';
+import { ToastContainer } from 'react-toastify';
 
 export class App extends Component {
   state = {
-    textSearch: '',
     isOpenModal: false,
+    textSearch: 'wave',
     currentImage: null,
   };
 
-  toggleModal = e => {
-    this.setState(prevState => ({ isOpenModal: !prevState.isOpenModal }));
+  toggleModal = event => {
+    this.setState(prevState => ({
+      isOpenModal: !prevState.isOpenModal,
+    }));
   };
 
   openModal = largeImage => {
@@ -30,11 +33,12 @@ export class App extends Component {
 
     return (
       <div className="container">
-        <HeaderSearchbar onSearch={this.handleSubmit} />
+        <HeaderSearchbar onSubmit={this.handleSubmit} />
         <ImageGallery value={this.state.textSearch} onClick={this.openModal} />
         {isOpenModal && (
           <Modal onClose={this.toggleModal} currentImage={currentImage} />
         )}
+        <ToastContainer autoClose={3000} />
       </div>
     );
   }

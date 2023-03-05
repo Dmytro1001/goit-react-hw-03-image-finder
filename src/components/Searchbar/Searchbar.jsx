@@ -7,22 +7,24 @@ import {
   SearchFormInput,
 } from './Searchbar.styles';
 import { BsSearch } from 'react-icons/bs';
+import { toast } from 'react-toastify';
 
 export class HeaderSearchbar extends Component {
   state = {
     value: '',
   };
 
-  // handleChange = ({ target: { value } }) => {
-  //   this.setState({ value });
-  // };
-  handleChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
+  handleChange = e => {
+    this.setState({ value: e.currentTarget.value.toLowerCase() });
   };
 
-  hanleSubmit = event => {
+  handleSubmit = event => {
     event.preventDefault();
-    this.props.onSearch(this.state.value);
+    if (this.state.value.trim() === '') {
+      toast.error('Type something to find');
+      return;
+    }
+    this.props.onSubmit(this.state.value);
     this.setState({ value: '' });
   };
 
@@ -36,12 +38,11 @@ export class HeaderSearchbar extends Component {
 
           <SearchFormInput
             type="text"
-            name="value"
             autoComplete="off"
             autoFocus
-            value={this.state.value}
-            onChange={this.handleChange}
             placeholder="Search images and photos"
+            value={this.state.findValue}
+            onChange={this.handleChange}
           />
         </SearchForm>
       </Searchbar>
@@ -50,5 +51,5 @@ export class HeaderSearchbar extends Component {
 }
 
 HeaderSearchbar.propTypes = {
-  onSearch: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 };

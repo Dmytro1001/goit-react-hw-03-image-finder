@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { PropTypes } from 'prop-types';
+import PropTypes from 'prop-types';
 import { fetchImages } from '../../services/getFetchImages';
 import { ImageGalleryList } from './ImageGallery.styles';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
@@ -66,7 +66,7 @@ export class ImageGallery extends Component {
             {images?.map(item => {
               return (
                 <ImageGalleryItem
-                  key={item.webformatURL}
+                  key={item.id}
                   url={item.webformatURL}
                   onClick={this.props.onClick}
                   bigImage={item.largeImageURL}
