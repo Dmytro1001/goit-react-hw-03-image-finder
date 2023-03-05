@@ -6,28 +6,22 @@ import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { Button } from 'components/Button/Button';
 import { Loader } from 'components/Loader/Loader';
 
-const Status = {
-  INIT: 'init',
-  LOADING: 'loading',
-  SUCCESS: 'success',
-  ERROR: 'error',
-};
-
 export class ImageGallery extends Component {
   state = {
     images: [],
-    page: 1,
-    status: Status.INIT,
+    totalHits: null,
+    page: null,
+    status: 'idle',
   };
 
   async componentDidMount() {
-    this.setState({ status: Status.LOADING });
+    this.setState({ status: 'idle' });
 
     try {
       const data = await fetchImages(this.props.value);
-      this.setState({ images: data, status: Status.SUCCESS });
+      this.setState({ images: data, status: 'resolved' });
     } catch {
-      this.setState({ status: Status.ERROR });
+      this.setState({ status: 'rejected' });
     }
   }
 
@@ -55,13 +49,25 @@ export class ImageGallery extends Component {
   render() {
     const { status, images } = this.state;
 
-    return (
-      <>
-        {status === Status.ERROR && <p>ERROR</p>}
+    if (status === 'idle') {
+      return <p>Please write what you are looking for in the search field.</p>;
+    }
 
-        {(status === Status.LOADING || status === Status.INIT) && <Loader />}
+    if (status === 'rejected') {
+      return <p>ERROR</p>;
+    }
 
-        {status === Status.SUCCESS && (
+    if (status === 'pending') {
+      return (
+        <>
+          <Loader />
+        </>
+      );
+    }
+
+    if (status === 'resolved') {
+      return (
+        <>
           <ImageGalleryList>
             {images?.map(item => {
               return (
@@ -74,10 +80,11 @@ export class ImageGallery extends Component {
               );
             })}
           </ImageGalleryList>
-        )}
-        {images.length >= 12 && <Button onClick={this.handleLoadMore} />}
-      </>
-    );
+
+          {images.length >= 12 && <Button onClick={this.handleLoadMore} />}
+        </>
+      );
+    }
   }
 }
 

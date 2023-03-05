@@ -41,7 +41,7 @@ export class HeaderSearchbar extends Component {
             autoComplete="off"
             autoFocus
             placeholder="Search images and photos"
-            value={this.state.findValue}
+            value={this.state.value}
             onChange={this.handleChange}
           />
         </SearchForm>
