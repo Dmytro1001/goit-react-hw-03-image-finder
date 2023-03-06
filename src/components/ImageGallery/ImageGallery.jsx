@@ -17,17 +17,6 @@ export class ImageGallery extends Component {
     error: null,
   };
 
-  // async componentDidMount() {
-  //   this.setState({ status: 'idle' });
-
-  //   try {
-  //     const data = await fetchImages(this.props.value);
-  //     this.setState({ images: data, status: 'resolved' });
-  //   } catch {
-  //     this.setState({ status: 'rejected' });
-  //   }
-  // }
-
   async componentDidUpdate(prevProps, prevState) {
     const prevQuery = prevProps.value;
     const currentQuery = this.props.value;
