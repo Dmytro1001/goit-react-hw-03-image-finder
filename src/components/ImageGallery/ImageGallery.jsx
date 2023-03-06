@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
+import { ToastContainer, toast } from 'react-toastify';
 import { fetchImages } from '../../services/getFetchImages';
 import { ImageGalleryList } from './ImageGallery.styles';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
@@ -8,68 +9,83 @@ import { Loader } from 'components/Loader/Loader';
 
 export class ImageGallery extends Component {
   state = {
+    request: '',
     images: [],
     totalHits: null,
-    page: null,
-    status: 'idle',
+    page: 1,
+    loadBtnShown: false,
+    error: null,
   };
 
-  async componentDidMount() {
-    this.setState({ status: 'idle' });
+  // async componentDidMount() {
+  //   this.setState({ status: 'idle' });
 
-    try {
-      const data = await fetchImages(this.props.value);
-      this.setState({ images: data, status: 'resolved' });
-    } catch {
-      this.setState({ status: 'rejected' });
-    }
-  }
+  //   try {
+  //     const data = await fetchImages(this.props.value);
+  //     this.setState({ images: data, status: 'resolved' });
+  //   } catch {
+  //     this.setState({ status: 'rejected' });
+  //   }
+  // }
 
   async componentDidUpdate(prevProps, prevState) {
-    if (prevProps.value !== this.props.value) {
-      const newData = await fetchImages(this.props.value);
-      this.setState({ images: newData });
+    const prevQuery = prevProps.value;
+    const currentQuery = this.props.value;
+    const prevPage = prevState.page;
+    const currentPage = this.state.page;
+    const prevStateRequest = prevState.request;
+
+    if (prevQuery !== currentQuery) {
+      this.setState(prev => ({
+        ...prev,
+        images: [],
+        page: 1,
+        request: currentQuery,
+        loadBtnShown: true,
+      }));
     }
 
     if (
-      prevState.page !== this.state.page &&
-      prevProps.value === this.props.value
+      prevStateRequest !== this.state.request ||
+      (prevPage !== currentPage && currentPage !== 1)
     ) {
-      const newPage = await fetchImages(this.props.value, this.state.page);
-      this.setState(prevState => ({
-        images: [...prevState.images, ...newPage],
-      }));
+      this.setState({ loading: true, page: currentPage });
+
+      fetchImages(currentQuery, currentPage)
+        .then(data => {
+          if (data.total === 0) {
+            this.setState({ loading: false });
+            return toast.warn(`Nothing was found for ${currentQuery}`, {
+              position: 'top-center',
+              theme: 'colored',
+            });
+          }
+
+          if (data.hits.length < 12) {
+            this.setState({ loadBtnShown: false });
+          }
+
+          this.setState(state => ({
+            images: [...state.images, ...data.hits],
+            loading: false,
+          }));
+        })
+        .catch(error => this.setState({ error }));
     }
   }
 
   handleLoadMore = () => {
-    this.setState(prevState => ({ page: prevState.page + 1 }));
+    this.setState(prevState => ({ page: prevState.page + 1, loading: true }));
   };
 
   render() {
-    const { status, images } = this.state;
+    const { images, loading, loadBtnShown } = this.state;
 
-    if (status === 'idle') {
-      return <p>Please write what you are looking for in the search field.</p>;
-    }
-
-    if (status === 'rejected') {
-      return <p>ERROR</p>;
-    }
-
-    if (status === 'pending') {
-      return (
-        <>
-          <Loader />
-        </>
-      );
-    }
-
-    if (status === 'resolved') {
-      return (
-        <>
-          <ImageGalleryList>
-            {images?.map(item => {
+    return (
+      <>
+        <ImageGalleryList>
+          {images.length > 0 &&
+            images.map(item => {
               return (
                 <ImageGalleryItem
                   key={item.id}
@@ -79,12 +95,14 @@ export class ImageGallery extends Component {
                 />
               );
             })}
-          </ImageGalleryList>
-
-          {images.length >= 12 && <Button onClick={this.handleLoadMore} />}
-        </>
-      );
-    }
+        </ImageGalleryList>
+        {images.length > 0 && !loading && loadBtnShown && (
+          <Button onClick={this.handleLoadMore} />
+        )}
+        {loading && <Loader />}
+        <ToastContainer autoClose={1500} />
+      </>
+    );
   }
 }
 

@@ -20,5 +20,5 @@ export const fetchImages = async (query, page = 1) => {
     },
   });
 
-  return data.hits;
+  return data;
 };

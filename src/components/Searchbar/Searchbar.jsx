@@ -21,7 +21,10 @@ export class HeaderSearchbar extends Component {
   handleSubmit = event => {
     event.preventDefault();
     if (this.state.value.trim() === '') {
-      toast.error('Type something to find');
+      toast.info('Type something to find', {
+        position: 'top-center',
+        theme: 'colored',
+      });
       return;
     }
     this.props.onSubmit(this.state.value);

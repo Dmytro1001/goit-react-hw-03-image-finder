@@ -5,6 +5,7 @@ import { HeaderSearchbar } from './Searchbar/Searchbar';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Container } from './App.styles';
+import { GlobalStyles } from './GlobalStyle';
 
 export class App extends Component {
   state = {
@@ -41,6 +42,7 @@ export class App extends Component {
           <Modal onClose={this.toggleModal} currentImage={currentImage} />
         )}
         <ToastContainer autoClose={3000} />
+        <GlobalStyles />
       </Container>
     );
   }
